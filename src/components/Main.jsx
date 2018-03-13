@@ -1,9 +1,7 @@
 const React = require('react')
-const Preview = require('./Preview')
-const Folder = require('./Folder')
+const Generate = require('./Generate')
 import firebase, { auth, provider } from '../firebase'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import FlatButton from 'material-ui/FlatButton'
 import AppBar from 'material-ui/AppBar'
 import Avatar from 'material-ui/Avatar'
@@ -22,10 +20,7 @@ class Main extends React.Component {
   componentDidMount() {
     auth.onAuthStateChanged((user) => {
       let avatar = user ? user.photoURL : null
-      this.setState({
-        user,
-        avatar
-      })
+      this.setState({user, avatar})
     })
   }
 
@@ -44,29 +39,28 @@ class Main extends React.Component {
       }
     }
 
-    let authButton = this.state.user ?
-      <div>
-        <FlatButton onClick={this.logout}
-          style={styles.button}
-          label="Log Out"></FlatButton>
-        <Avatar src={this.state.avatar} style={styles.pic}/>
-      </div>
-       :
-      <FlatButton onClick={this.login}
-        style={styles.button}
-        label="log in"></FlatButton>
+    let authButton = this.state.user
+      ? <div>
+          <FlatButton onClick={this.logout}
+            style={styles.button}
+            label="Log Out"></FlatButton>
+          <Avatar src={this.state.avatar} style={styles.pic}/>
+        </div>
 
-    let app = this.state.user ?
-      <div>
-        <Folder user={this.state.user} getFolder={this.getFolder}/>
-      </div> :
-      <h4>Log in to use photo-loader</h4>
+      : <FlatButton onClick={this.login}
+          style={styles.button}
+          label="log in">
+        </FlatButton>
+
+    let app = !this.state.user
+      ? <h4>Log in to use app</h4>
+      : <Generate/>
 
     return (
       <MuiThemeProvider>
         <div>
           <AppBar
-            title='Photo Loader'
+            title='title'
             showMenuIconButton={false}
             iconElementRight={authButton}
             style={styles.bar}
