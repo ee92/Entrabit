@@ -1,12 +1,12 @@
 const firebase = require('firebase')
 
 const config = {
-  apiKey: "AIzaSyDzyLI6X7lz0oGtys_FWoh_tucQP1jSGdA",
-  authDomain: "photo-load.firebaseapp.com",
-  databaseURL: "https://photo-load.firebaseio.com",
-  projectId: "photo-load",
-  storageBucket: "photo-load.appspot.com",
-  messagingSenderId: "119279445969"
+  apiKey: "AIzaSyDynbSpeLkdgARWObGwM8XlephUEnNthBE",
+  authDomain: "entra-bit.firebaseapp.com",
+  databaseURL: "https://entra-bit.firebaseio.com",
+  projectId: "entra-bit",
+  storageBucket: "entra-bit.appspot.com",
+  messagingSenderId: "1036940921417"
 };
 firebase.initializeApp(config)
 

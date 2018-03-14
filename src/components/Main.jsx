@@ -48,7 +48,7 @@ class Main extends React.Component {
 
     let app = !this.state.user
       ? <h4>Log in to use app</h4>
-      : <Generate/>
+      : <Generate user={this.state.user}/>
 
     return (
       <MuiThemeProvider>
