@@ -23,8 +23,12 @@
   flex-direction: row;
 }
 
-.aid {
+.container {
   display: flex;
   flex-direction: row;
   align-items: baseline;
+}
+
+.light {
+  opacity: .1;
 }

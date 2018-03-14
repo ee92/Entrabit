@@ -8,6 +8,7 @@ import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import AutoComplete from 'material-ui/AutoComplete'
 import PasswordField from 'material-ui-password-field'
+import IconButton from 'material-ui/IconButton'
 import FontIcon from 'material-ui/FontIcon'
 
 import firebase, { storage, database } from '../firebase'
@@ -16,11 +17,11 @@ class Generate extends React.Component {
 
   state = {
     user: this.props.user,
-    sites: [],
+    websites: [],
     username: '',
-    site: 'Website',
+    site: '',
     aid: [],
-    password: words[155],
+    password: '',
     bit: ''
   }
 
@@ -28,9 +29,9 @@ class Generate extends React.Component {
     if (text) {
       let hash = md5(text).split('').filter((x) => !isNaN(Number(x)))
       let aid = []
-      aid.push(icons[hash.slice(0,7).join('') % icons.length])
-      aid.push(icons[hash.slice(7,14).join('') % icons.length])
-      aid.push(icons[hash.slice(14,21).join('') % icons.length])
+      aid.push(icons[hash.slice(0,5).join('') % icons.length])
+      aid.push(icons[hash.slice(5,10).join('') % icons.length])
+      aid.push(icons[hash.slice(10,15).join('') % icons.length])
       this.setState({aid, bit: text})
     } else {
       this.setState({aid: []})
@@ -38,7 +39,7 @@ class Generate extends React.Component {
   }
 
   selectSite = () => {
-    database.ref(this.state.user.uid).on('value', (sites) => {
+    database.ref(this.props.user.uid).once('value', (sites) => {
       sites.forEach((site) => {
         if (site.key == this.state.site) {
           console.log(site.val().username)
@@ -48,11 +49,29 @@ class Generate extends React.Component {
     })
   }
 
+  deleteSite = () => {
+    database.ref(this.props.user.uid).child(this.state.site).remove()
+    this.getWebsites()
+    this.setState({
+      password: '',
+      site: ''
+    })
+  }
+
+  deleteUsername = () => {
+    database.ref(this.props.user.uid).child(this.state.site).set({
+      'username' : ''
+    })
+    this.setState({
+      username: ''
+    })
+  }
+
   storeUsername = () => {
     let updates = {
       'username' : this.state.username
     }
-    database.ref(this.state.user.uid + '/' + this.state.site).set(updates)
+    database.ref(this.props.user.uid + '/' + this.state.site).set(updates)
   }
 
   createPassword = () => {
@@ -62,9 +81,27 @@ class Generate extends React.Component {
     let password = words[hash.slice(0,12).join('') % words.length]
     this.setState({password})
     this.storeUsername()
+    this.getWebsites()
+  }
+
+  getWebsites = () => {
+    database.ref(this.props.user.uid).once('value', (sites) => {
+      let websites = []
+      sites.forEach((site) => {
+        websites.push(site.key)
+      })
+      this.setState({websites})
+    })
+  }
+
+  componentDidMount() {
+    this.getWebsites()
   }
 
   render() {
+
+    let remove = this.state.websites.includes(this.state.site) ? 'delete' : 'clear'
+
     return (
       <div className='app'>
         <p>
@@ -72,25 +109,43 @@ class Generate extends React.Component {
           rest of your passwords... this app will never store <b>any</b> of them!
         </p>
         <div className='inputs'>
-          <AutoComplete
-            floatingLabelText="Website"
-            dataSource={['Facebook','Google','Twitter']}
-            onClose={this.selectSite}
-            onUpdateInput={(site) => this.setState({site})}
-            openOnFocus={true}
-            filter={AutoComplete.caseInsensitiveFilter}
-            fullWidth={true}/>
-          <TextField
-            onChange={(e, username) => this.setState({username})}
-            value={this.state.username}
-            floatingLabelText="Username/Email"
-            fullWidth={true}/>
-          <div className='aid'>
+          <div className='container'>
+            <AutoComplete
+              floatingLabelText="Website"
+              dataSource={this.state.websites}
+              onClose={this.selectSite}
+              onUpdateInput={(site) => this.setState({site})}
+              openOnFocus={true}
+              filter={AutoComplete.caseInsensitiveFilter}
+              fullWidth={true}
+              searchText={this.state.site}
+            />
+            {(this.state.site) &&
+              (<IconButton onClick={this.deleteSite}>
+                <i className="material-icons light">{remove}</i>
+              </IconButton>)
+            }
+          </div>
+          <div className='container'>
+            <TextField
+              onChange={(e, username) => this.setState({username})}
+              value={this.state.username}
+              floatingLabelText="Username/Email"
+              fullWidth={true}
+            />
+            {(this.state.username) &&
+              (<IconButton onClick={this.deleteUsername}>
+                <i className="material-icons light">{remove}</i>
+              </IconButton>)
+            }
+          </div>
+          <div className='container'>
             <PasswordField
               onChange={(e,text) => this.visualAid(text)}
               style={{ flexGrow: 1}}
               fullWidth={true}
-              floatingLabelText="Entrabit"/>
+              floatingLabelText="Entrabit"
+            />
               <div className='icons'>
                 { this.state.aid &&
                   this.state.aid.map((icon) => (
@@ -103,13 +158,15 @@ class Generate extends React.Component {
             onClick={this.createPassword}
             label="generate"
             primary={true}
-            fullWidth={true}/>
+            fullWidth={true}
+          />
           <PasswordField
-            floatingLabelText={`Password for ${this.state.site}`}
+            floatingLabelText={`Password for ${this.state.site || 'website'}`}
             disableButton={false}
             underlineFocusStyle={{borderBottom: 'none'}}
             value={this.state.password}
-            fullWidth={true}/>
+            fullWidth={true}
+          />
         </div>
       </div>
     )
