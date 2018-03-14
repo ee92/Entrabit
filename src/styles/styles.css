@@ -3,3 +3,22 @@
 * {
   font-family: 'Roboto', sans-serif;
 }
+
+.app {
+  width: 75%;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.inputs {
+  margin: 0 auto;
+  width: 75%;
+  display: flex;
+  flex-direction: column;
+}
+
+.icons {
+  font-size: 125%;
+  display: flex;
+  flex-direction: row;
+}

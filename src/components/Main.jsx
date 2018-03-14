@@ -5,7 +5,6 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import FlatButton from 'material-ui/FlatButton'
 import AppBar from 'material-ui/AppBar'
 import Avatar from 'material-ui/Avatar'
-import {grey600} from 'material-ui/styles/colors'
 
 class Main extends React.Component {
 
@@ -30,9 +29,6 @@ class Main extends React.Component {
         margin: 6,
         color: 'white'
       },
-      bar: {
-        backgroundColor: grey600
-      },
       pic: {
         margin: 6,
         float: 'right'
@@ -41,14 +37,12 @@ class Main extends React.Component {
 
     let authButton = this.state.user
       ? <div>
-          <FlatButton onClick={this.logout}
-            style={styles.button}
+          <FlatButton onClick={this.logout} style={styles.button}
             label="Log Out"></FlatButton>
           <Avatar src={this.state.avatar} style={styles.pic}/>
         </div>
 
-      : <FlatButton onClick={this.login}
-          style={styles.button}
+      : <FlatButton onClick={this.login} style={styles.button}
           label="log in">
         </FlatButton>
 
@@ -60,10 +54,9 @@ class Main extends React.Component {
       <MuiThemeProvider>
         <div>
           <AppBar
-            title='title'
+            title='Entrabit'
             showMenuIconButton={false}
             iconElementRight={authButton}
-            style={styles.bar}
           />
           {app}
         </div>
