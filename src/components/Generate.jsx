@@ -59,11 +59,12 @@ class Generate extends React.Component {
   }
 
   deleteUsername = () => {
-    database.ref(this.props.user.uid).child(this.state.site).set({
-      'username' : ''
-    })
     this.setState({
       username: ''
+    })
+    this.state.site &&
+    database.ref(this.props.user.uid).child(this.state.site).set({
+      'username' : ''
     })
   }
 
