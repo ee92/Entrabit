@@ -22,3 +22,9 @@
   display: flex;
   flex-direction: row;
 }
+
+.aid {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}

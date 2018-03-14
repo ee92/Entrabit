@@ -1,6 +1,7 @@
 const React = require('react')
 const words = require('an-array-of-english-words')
 const icons = require('./../../icons.js')
+const md5 = require('md5')
 
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
@@ -14,7 +15,21 @@ class Generate extends React.Component {
     sites: [],
     username: null,
     site: 'Website',
+    aid: [],
     password: words[155]
+  }
+
+  visualAid = (text) => {
+    if (text) {
+      let hash = md5(text).split('').filter((x) => !isNaN(Number(x)))
+      let aid = []
+      aid.push(icons[hash.slice(0,7).join('') % icons.length])
+      aid.push(icons[hash.slice(7,14).join('') % icons.length])
+      aid.push(icons[hash.slice(14,21).join('') % icons.length])
+      this.setState({aid})
+    } else {
+      this.setState({aid: []})
+    }
   }
 
   render() {
@@ -36,15 +51,18 @@ class Generate extends React.Component {
           <TextField
             floatingLabelText="Username/Email"
             fullWidth={true}/>
-          <div style={{display: 'flex', flexDirection: 'row', alignItems: 'baseline'}}>
+          <div className='aid'>
             <PasswordField
+              onChange={(e,text) => this.visualAid(text)}
               style={{ flexGrow: 1}}
               fullWidth={true}
               floatingLabelText="Entrabit"/>
-              <div className="icons">
-                <i className="material-icons">{icons[Math.floor(Math.random() * icons.length)]}</i>
-                <i className="material-icons">{icons[Math.floor(Math.random() * icons.length)]}</i>
-                <i className="material-icons">{icons[Math.floor(Math.random() * icons.length)]}</i>
+              <div className='icons'>
+                { this.state.aid &&
+                  this.state.aid.map((icon) => (
+                    <i className="material-icons" key={icon}>{icon}</i>
+                  ))
+                }
               </div>
           </div>
           <RaisedButton
