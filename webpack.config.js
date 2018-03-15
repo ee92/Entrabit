@@ -1,4 +1,5 @@
 const path = require('path')
+const Jarvis = require("webpack-jarvis")
 
 module.exports = {
   entry: "./src/app.jsx",
@@ -21,5 +22,10 @@ module.exports = {
   },
   resolve: {
     extensions: [".js", ".jsx", ".css"]
-  }
+  },
+  plugins: [
+    new Jarvis({
+      port: 1337 // optional: set a port
+    })
+  ]
 };

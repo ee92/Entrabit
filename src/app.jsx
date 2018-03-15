@@ -6,5 +6,5 @@ import './styles/styles.css'
 
 ReactDOM.render(
   <Main/>,
-  document.getElementById('id')
+  document.getElementById('app')
 )

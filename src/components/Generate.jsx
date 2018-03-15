@@ -4,9 +4,11 @@ const icons = require('./../../icons.js')
 const scrypt = require('scryptsy')
 const md5 = require('md5')
 
+import Aid from './Aid'
+import Info from './Info'
+
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
-import AutoComplete from 'material-ui/AutoComplete'
 import PasswordField from 'material-ui-password-field'
 import IconButton from 'material-ui/IconButton'
 import FontIcon from 'material-ui/FontIcon'
@@ -25,24 +27,15 @@ class Generate extends React.Component {
     bit: ''
   }
 
-  visualAid = (text) => {
-    if (text) {
-      let hash = md5(text).split('').filter((x) => !isNaN(Number(x)))
-      let aid = []
-      aid.push(icons[hash.slice(0,5).join('') % icons.length])
-      aid.push(icons[hash.slice(5,10).join('') % icons.length])
-      aid.push(icons[hash.slice(10,15).join('') % icons.length])
-      this.setState({aid, bit: text})
-    } else {
-      this.setState({aid: []})
-    }
-  }
+  // used by Info
+
+  setUser = (username) => { this.setState({username}) }
+  setSite = (site) => { this.setState({site}) }
 
   selectSite = () => {
     database.ref(this.props.user.uid).once('value', (sites) => {
       sites.forEach((site) => {
         if (site.key == this.state.site) {
-          console.log(site.val().username)
           this.setState({username: site.val().username})
         }
       })
@@ -68,12 +61,22 @@ class Generate extends React.Component {
     })
   }
 
-  storeUsername = () => {
-    let updates = {
-      'username' : this.state.username
+  // used by Aid
+
+  visualAid = (text) => {
+    if (text) {
+      let hash = md5(text).split('').filter((x) => !isNaN(Number(x)))
+      let aid = []
+      aid.push(icons[hash.slice(0,5).join('') % icons.length])
+      aid.push(icons[hash.slice(5,10).join('') % icons.length])
+      aid.push(icons[hash.slice(10,15).join('') % icons.length])
+      this.setState({aid, bit: text})
+    } else {
+      this.setState({aid: []})
     }
-    database.ref(this.props.user.uid + '/' + this.state.site).set(updates)
   }
+
+  // used by Generate
 
   createPassword = () => {
     let str = this.state.username + this.state.bit
@@ -83,6 +86,13 @@ class Generate extends React.Component {
     this.setState({password})
     this.storeUsername()
     this.getWebsites()
+  }
+
+  storeUsername = () => {
+    let updates = {
+      'username' : this.state.username
+    }
+    database.ref(this.props.user.uid + '/' + this.state.site).set(updates)
   }
 
   getWebsites = () => {
@@ -95,13 +105,13 @@ class Generate extends React.Component {
     })
   }
 
+  // load user sites
+
   componentDidMount() {
     this.getWebsites()
   }
 
   render() {
-
-    let remove = this.state.websites.includes(this.state.site) ? 'delete' : 'clear'
 
     return (
       <div className='app'>
@@ -110,51 +120,20 @@ class Generate extends React.Component {
           rest of your passwords... this app will never store <b>any</b> of them!
         </p>
         <div className='inputs'>
-          <div className='container'>
-            <AutoComplete
-              floatingLabelText="Website"
-              dataSource={this.state.websites}
-              onClose={this.selectSite}
-              onUpdateInput={(site) => this.setState({site})}
-              openOnFocus={true}
-              filter={AutoComplete.caseInsensitiveFilter}
-              fullWidth={true}
-              searchText={this.state.site}
-            />
-            {(this.state.site) &&
-              (<IconButton onClick={this.deleteSite}>
-                <i className="material-icons light">{remove}</i>
-              </IconButton>)
-            }
-          </div>
-          <div className='container'>
-            <TextField
-              onChange={(e, username) => this.setState({username})}
-              value={this.state.username}
-              floatingLabelText="Username/Email"
-              fullWidth={true}
-            />
-            {(this.state.username) &&
-              (<IconButton onClick={this.deleteUsername}>
-                <i className="material-icons light">{remove}</i>
-              </IconButton>)
-            }
-          </div>
-          <div className='container'>
-            <PasswordField
-              onChange={(e,text) => this.visualAid(text)}
-              style={{ flexGrow: 1}}
-              fullWidth={true}
-              floatingLabelText="Entrabit"
-            />
-              <div className='icons'>
-                { this.state.aid &&
-                  this.state.aid.map((icon) => (
-                    <i className="material-icons" key={icon}>{icon}</i>
-                  ))
-                }
-              </div>
-          </div>
+          <Info
+            websites={this.state.websites}
+            site={this.state.site}
+            username={this.state.username}
+            deleteSite={this.deleteSite}
+            deleteUsername={this.deleteUsername}
+            selectSite={this.selectSite}
+            setUser={this.setUser}
+            setSite={this.setSite}
+          />
+          <Aid
+            visualAid={this.visualAid}
+            aid={this.state.aid}
+          />
           <RaisedButton
             onClick={this.createPassword}
             label="generate"

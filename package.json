@@ -32,7 +32,8 @@
     "css-loader": "^0.28.10",
     "live-server": "^1.2.0",
     "url-loader": "^0.6.2",
-    "webpack": "^3.10.0"
+    "webpack": "^3.10.0",
+    "webpack-jarvis": "^0.3.0"
   },
   "babel": {
     "presets": [
