@@ -17,7 +17,6 @@ import firebase, { storage, database } from '../firebase'
 class Generate extends React.Component {
 
   state = {
-    user: this.props.user,
     websites: [],
     username: '',
     site: '',
@@ -85,7 +84,8 @@ class Generate extends React.Component {
     })
     this.state.site &&
     database.ref(this.props.user.uid).child(this.state.site).set({
-      'username' : ''
+      'username' : '',
+      'settings' : this.state.settings
     })
   }
 
