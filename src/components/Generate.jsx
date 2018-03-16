@@ -6,12 +6,11 @@ const md5 = require('md5')
 
 import Aid from './Aid'
 import Info from './Info'
+import Settings from './Settings'
 
-import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import PasswordField from 'material-ui-password-field'
 import IconButton from 'material-ui/IconButton'
-import FontIcon from 'material-ui/FontIcon'
 
 import firebase, { storage, database } from '../firebase'
 
@@ -24,24 +23,54 @@ class Generate extends React.Component {
     site: '',
     aid: [],
     password: '',
-    bit: ''
+    bit: '',
+    options: false,
+    settings: {
+      numbers: true,
+      symbols: true,
+      caps: true,
+      spaces: false
+    }
+  }
+
+  // used by Setttings
+  toggleOptions = () => this.setState({options: !this.state.options})
+  setNumbers = () => {
+    let settings = {...this.state.settings}
+    settings.numbers = !this.state.settings.numbers
+    this.setState({settings})
+  }
+  setSymbols = () => {
+    let settings = {...this.state.settings}
+    settings.symbols = !this.state.settings.symbols
+    this.setState({settings})
+  }
+  setCaps = () => {
+    let settings = {...this.state.settings}
+    settings.caps = !this.state.settings.caps
+    this.setState({settings})
+  }
+  setSpaces = () => {
+    let settings = {...this.state.settings}
+    settings.spaces = !this.state.settings.spaces
+    this.setState({settings})
   }
 
   // used by Info
-
-  setUser = (username) => { this.setState({username}) }
-  setSite = (site) => { this.setState({site}) }
-
+  setUser = (username) => this.setState({username})
+  setSite = (site) => this.setState({site})
   selectSite = () => {
     database.ref(this.props.user.uid).once('value', (sites) => {
       sites.forEach((site) => {
         if (site.key == this.state.site) {
-          this.setState({username: site.val().username})
+          this.setState({
+            username: site.val().username,
+            settings: site.val().settings
+          })
         }
       })
     })
   }
-
   deleteSite = () => {
     database.ref(this.props.user.uid).child(this.state.site).remove()
     this.getWebsites()
@@ -50,7 +79,6 @@ class Generate extends React.Component {
       site: ''
     })
   }
-
   deleteUsername = () => {
     this.setState({
       username: ''
@@ -62,7 +90,6 @@ class Generate extends React.Component {
   }
 
   // used by Aid
-
   visualAid = (text) => {
     if (text) {
       let hash = md5(text).split('').filter((x) => !isNaN(Number(x)))
@@ -72,29 +99,27 @@ class Generate extends React.Component {
       aid.push(icons[hash.slice(10,15).join('') % icons.length])
       this.setState({aid, bit: text})
     } else {
-      this.setState({aid: []})
+      this.setState({aid: [], bit: text})
     }
   }
 
   // used by Generate
-
   createPassword = () => {
     let str = this.state.username + this.state.bit
     let hash = scrypt(this.state.site, str, 16384, 8, 1, 64).toString('hex')
       .split('').filter((x) => !isNaN(Number(x)))
     let password = words[hash.slice(0,12).join('') % words.length]
     this.setState({password})
-    this.storeUsername()
+    this.storeUserData()
     this.getWebsites()
   }
-
-  storeUsername = () => {
+  storeUserData = () => {
     let updates = {
-      'username' : this.state.username
+      'username' : this.state.username,
+      'settings' : this.state.settings
     }
     database.ref(this.props.user.uid + '/' + this.state.site).set(updates)
   }
-
   getWebsites = () => {
     database.ref(this.props.user.uid).once('value', (sites) => {
       let websites = []
@@ -106,13 +131,11 @@ class Generate extends React.Component {
   }
 
   // load user sites
-
   componentDidMount() {
     this.getWebsites()
   }
 
   render() {
-
     return (
       <div className='app'>
         <p>
@@ -134,19 +157,40 @@ class Generate extends React.Component {
             visualAid={this.visualAid}
             aid={this.state.aid}
           />
-          <RaisedButton
-            onClick={this.createPassword}
-            label="generate"
-            primary={true}
-            fullWidth={true}
-          />
-          <PasswordField
-            floatingLabelText={`Password for ${this.state.site || 'website'}`}
-            disableButton={false}
-            underlineFocusStyle={{borderBottom: 'none'}}
-            value={this.state.password}
-            fullWidth={true}
-          />
+          <div className="container">
+            <RaisedButton
+              onClick={this.createPassword}
+              label="generate"
+              primary={true}
+              style={{ flexGrow: 1}}
+              className="space"
+              disabled={!(this.state.site && this.state.username && this.state.bit)}
+            />
+            <RaisedButton
+              icon={<i className="material-icons">settings</i>}
+              onClick={this.toggleOptions}
+              className="space"
+            />
+          </div>
+          {this.state.options && (
+            <Settings
+              options={this.state.options}
+              settings={this.state.settings}
+              setNumbers={this.setNumbers}
+              setSymbols={this.setSymbols}
+              setCaps={this.setCaps}
+              setSpaces={this.setSpaces}
+            />
+          )}
+          {this.state.password && (
+            <PasswordField
+              floatingLabelText={`Password for ${this.state.site || 'website'}`}
+              disableButton={false}
+              underlineFocusStyle={{borderBottom: 'none'}}
+              value={this.state.password}
+              fullWidth={true}
+            />
+          )}
         </div>
       </div>
     )

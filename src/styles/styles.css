@@ -6,7 +6,6 @@
 
 .app {
   width: 75%;
-  text-align: center;
   margin: 0 auto;
 }
 
@@ -31,4 +30,14 @@
 
 .light {
   opacity: .1;
+}
+
+.space {
+  margin: 12px;
+}
+
+@media (max-width: 450px) {
+  .inputs {
+    width: 100%;
+  }
 }

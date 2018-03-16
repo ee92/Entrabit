@@ -22,6 +22,7 @@ class Info extends React.Component {
             filter={AutoComplete.caseInsensitiveFilter}
             fullWidth={true}
             searchText={this.props.site}
+            listStyle={{ maxHeight: 200, overflow: 'auto' }}
           />
           {(this.props.site) &&
             (<IconButton onClick={this.props.deleteSite}>

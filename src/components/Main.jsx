@@ -54,7 +54,7 @@ class Main extends React.Component {
       <MuiThemeProvider>
         <div>
           <AppBar
-            title='Entrabit'
+            title='EntraBit'
             showMenuIconButton={false}
             iconElementRight={authButton}
           />
