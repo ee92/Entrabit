@@ -36,6 +36,14 @@
   margin: 12px;
 }
 
+.space-in {
+  padding: 12px;
+}
+
+.delete {
+  z-index: 2;
+}
+
 @media (max-width: 450px) {
   .inputs {
     width: 100%;

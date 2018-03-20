@@ -34,31 +34,16 @@ class Generate extends React.Component {
 
   // used by Setttings
   toggleOptions = () => this.setState({options: !this.state.options})
-  setNumbers = () => {
+  setCheck = (setting, checked) => {
     let settings = {...this.state.settings}
-    settings.numbers = !this.state.settings.numbers
-    this.setState({settings})
-  }
-  setSymbols = () => {
-    let settings = {...this.state.settings}
-    settings.symbols = !this.state.settings.symbols
-    this.setState({settings})
-  }
-  setCaps = () => {
-    let settings = {...this.state.settings}
-    settings.caps = !this.state.settings.caps
-    this.setState({settings})
-  }
-  setSpaces = () => {
-    let settings = {...this.state.settings}
-    settings.spaces = !this.state.settings.spaces
+    settings[setting] = checked
     this.setState({settings})
   }
 
   // used by Info
   setUser = (username) => this.setState({username})
   setSite = (site) => this.setState({site})
-  selectSite = () => {
+  getSettings = () => {
     database.ref(this.props.user.uid).once('value', (sites) => {
       sites.forEach((site) => {
         if (site.key == this.state.site) {
@@ -78,16 +63,7 @@ class Generate extends React.Component {
       site: ''
     })
   }
-  deleteUsername = () => {
-    this.setState({
-      username: ''
-    })
-    this.state.site &&
-    database.ref(this.props.user.uid).child(this.state.site).set({
-      'username' : '',
-      'settings' : this.state.settings
-    })
-  }
+  deleteUsername = () => this.setState({username: ''})
 
   // used by Aid
   visualAid = (text) => {
@@ -149,7 +125,7 @@ class Generate extends React.Component {
             username={this.state.username}
             deleteSite={this.deleteSite}
             deleteUsername={this.deleteUsername}
-            selectSite={this.selectSite}
+            getSettings={this.getSettings}
             setUser={this.setUser}
             setSite={this.setSite}
           />
@@ -176,10 +152,7 @@ class Generate extends React.Component {
             <Settings
               options={this.state.options}
               settings={this.state.settings}
-              setNumbers={this.setNumbers}
-              setSymbols={this.setSymbols}
-              setCaps={this.setCaps}
-              setSpaces={this.setSpaces}
+              setCheck={this.setCheck}
             />
           )}
           {this.state.password && (
