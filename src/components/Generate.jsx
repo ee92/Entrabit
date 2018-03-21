@@ -1,5 +1,5 @@
 const React = require('react')
-const words = require('an-array-of-english-words')
+const wordList = require('an-array-of-english-words')
 const icons = require('./../../icons.js')
 const scrypt = require('scryptsy')
 const md5 = require('md5')
@@ -55,7 +55,7 @@ class Generate extends React.Component {
     this.setState({settings})
   }
   salt = () => {
-    let word = words[Math.floor(Math.random() * words.length)]
+    let word = wordList[Math.floor(Math.random() * wordList.length)]
     this.set('saltUsed', word)
   }
 
@@ -99,15 +99,6 @@ class Generate extends React.Component {
   }
 
   // used by Generate
-  createPassword = () => {
-    let str = this.state.username + this.state.bit
-    let hash = scrypt(this.state.site, str, 16384, 8, 1, 64).toString('hex')
-      .split('').filter((x) => !isNaN(Number(x)))
-    let password = words[hash.slice(0,12).join('') % words.length]
-    this.setState({password})
-    this.storeUserData()
-    this.getWebsites()
-  }
   storeUserData = () => {
     let updates = {
       'username' : this.state.username,
@@ -124,11 +115,32 @@ class Generate extends React.Component {
       this.setState({websites})
     })
   }
+  createPassword = () => {
+    let str = this.state.username + this.state.bit + this.state.site
+    let {saltUsed, words, symbols, symbolsUsed} = this.state.settings
 
-  // load user sites
-  componentDidMount() {
+    let hash = scrypt(str, saltUsed, 16384, 8, 1, 64).toString('hex')
+      .split('').filter((x) => !isNaN(Number(x)))
+
+    let number = hash[0]
+    let symbol = symbolsUsed.split('')[hash[1] % symbolsUsed.length]
+
+    let password = ''
+    for (var i=0; i<Number(words); i++) {
+      let word = wordList[hash.slice(i*10,i*10+10).join('') % wordList.length]
+      word = word.charAt(0).toUpperCase() + word.slice(1)
+      password += word
+    }
+
+    password += number + symbol
+
+    this.setState({password})
+    this.storeUserData()
     this.getWebsites()
   }
+
+  // load user sites
+  componentDidMount() {this.getWebsites()}
 
   render() {
     return (

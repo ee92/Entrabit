@@ -8,10 +8,6 @@ import { FormGroup, FormControlLabel } from 'material-ui-next/Form'
 
 class Settings extends React.Component {
 
-  state = {
-    value: 0
-  }
-
   render() {
 
     !this.props.settings.saltUsed && this.props.salt()
@@ -32,14 +28,14 @@ class Settings extends React.Component {
           {this.props.settings.memorable
           ?
             <Increment
-              value={this.props.settings.words}
+              value={this.props.settings.words + " words"}
               setting="words"
               incUp={this.props.incUp}
               incDown={this.props.incDown}
             />
           :
             <Increment
-              value={this.props.settings.length}
+              value={this.props.settings.length + " characters"}
               setting="length"
               incUp={this.props.incUp}
               incDown={this.props.incDown}
