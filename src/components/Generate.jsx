@@ -11,6 +11,8 @@ import Settings from './Settings'
 import RaisedButton from 'material-ui/RaisedButton'
 import PasswordField from 'material-ui-password-field'
 import IconButton from 'material-ui/IconButton'
+import Button from 'material-ui-next/Button'
+import Dialog, { DialogActions, DialogTitle } from 'material-ui-next/Dialog';
 
 import firebase, { storage, database } from '../firebase'
 
@@ -25,19 +27,41 @@ class Generate extends React.Component {
     bit: '',
     options: false,
     settings: {
-      numbers: true,
+      memorable: true,
       symbols: true,
-      caps: true,
-      spaces: false
+      symbolsUsed: '@#$%^&*?!',
+      salt: false,
+      saltUsed: '',
+      length: 16,
+      words: 3
     }
   }
 
-  // used by Setttings
+  // used by Settings
   toggleOptions = () => this.setState({options: !this.state.options})
+  set = (setting, state) => {
+    let settings = {...this.state.settings}
+    settings[setting] = state
+    this.setState({settings})
+  }
   setCheck = (setting, checked) => {
     let settings = {...this.state.settings}
     settings[setting] = checked
     this.setState({settings})
+  }
+  incUp = (setting) => {
+    let settings = {...this.state.settings}
+    settings[setting] = settings[setting] + 1
+    this.setState({settings})
+  }
+  incDown = (setting) => {
+    let settings = {...this.state.settings}
+    settings[setting] = settings[setting] - 1
+    this.setState({settings})
+  }
+  salt = () => {
+    let word = words[Math.floor(Math.random() * words.length)]
+    this.set('saltUsed', word)
   }
 
   // used by Info
@@ -149,11 +173,25 @@ class Generate extends React.Component {
             />
           </div>
           {this.state.options && (
-            <Settings
-              options={this.state.options}
-              settings={this.state.settings}
-              setCheck={this.setCheck}
-            />
+            <Dialog
+              open={this.state.options}
+              onClose={() => this.setState({options: false})}
+            >
+              <DialogTitle>Password Settings</DialogTitle>
+              <Settings
+                settings={this.state.settings}
+                setCheck={this.setCheck}
+                incUp={this.incUp}
+                incDown={this.incDown}
+                set={this.set}
+                salt={this.salt}
+              />
+              <DialogActions>
+                <Button onClick={() => this.setState({options: false})}>
+                  DONE
+                </Button>
+              </DialogActions>
+            </Dialog>
           )}
           {this.state.password && (
             <PasswordField

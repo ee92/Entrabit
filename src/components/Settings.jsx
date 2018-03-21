@@ -1,13 +1,10 @@
 const React = require('react')
+const Increment = require('./Increment')
 
-import AppBar from 'material-ui-next/AppBar'
-import Paper from 'material-ui-next/Paper'
-import Tabs, { Tab } from 'material-ui-next/Tabs'
-import Checkbox from 'material-ui/Checkbox'
-import TextField from 'material-ui-next/TextField'
+import Switch from 'material-ui-next/Switch'
+import TextField from 'material-ui/TextField'
 import IconButton from 'material-ui/IconButton'
-import { InputAdornment } from 'material-ui-next/Input'
-
+import { FormGroup, FormControlLabel } from 'material-ui-next/Form'
 
 class Settings extends React.Component {
 
@@ -18,75 +15,82 @@ class Settings extends React.Component {
   render() {
     return (
       <div className='space'>
-        <AppBar position="static" color="default">
-          <Tabs
-            fullWidth
-            value={this.state.value}
-            onChange={(e, value) => this.setState({value})}
-          >
-            <Tab label="Memorizable" />
-            <Tab label="Non-memorizable" />
-          </Tabs>
-        </AppBar>
-        <Paper className="space-in">
-          <Checkbox
-            label='Captialize first letter'
-            checked={this.props.settings.caps}
-            onCheck={(e, checked) => this.props.setCheck('caps', checked)}
+        <FormGroup>
+          <FormControlLabel
+            label="Memorizable"
+            control={
+              <Switch
+                checked={this.props.settings.memorable}
+                onChange={(e, checked) => this.props.setCheck('memorable', checked)}
+                color="primary"
+              />
+            }
           />
-          <Checkbox
-            label='Include digit'
-            checked={this.props.settings.numbers}
-            onCheck={(e, checked) => this.props.setCheck('numbers', checked)}
-          />
-          <Checkbox
-            label='Include symbol'
-            checked={this.props.settings.symbols}
-            onCheck={(e, checked) => this.props.setCheck('symbols', checked)}
-          />
-          {this.state.value == 0 &&
-            <TextField
-              helperText="# of words"
-              value={3}
-              InputProps={{
-                startAdornment:
-                  <InputAdornment position="start">
-                    <IconButton>
-                      <i className="material-icons light">remove</i>
-                    </IconButton>
-                  </InputAdornment>,
-                endAdornment:
-                  <InputAdornment position="end">
-                    <IconButton>
-                      <i className="material-icons light">add</i>
-                    </IconButton>
-                  </InputAdornment>,
-                style: {width: '50%', textAlign: 'center'}
-              }}
+          {this.props.settings.memorable
+          ?
+            <Increment
+              value={this.props.settings.words}
+              setting="words"
+              incUp={this.props.incUp}
+              incDown={this.props.incDown}
+            />
+          :
+            <Increment
+              value={this.props.settings.length}
+              setting="length"
+              incUp={this.props.incUp}
+              incDown={this.props.incDown}
             />
           }
-          {this.state.value == 1 &&
+        </FormGroup>
+        <FormGroup>
+          <FormControlLabel
+            label="Symbols"
+            control={
+              <Switch
+                checked={this.props.settings.symbols}
+                onChange={(e, checked) => this.props.setCheck('symbols', checked)}
+                color="primary"
+              />
+            }
+          />
+          {this.props.settings.symbols &&
             <TextField
-              helperText="Length"
-              value={16}
-              InputProps={{
-                startAdornment:
-                  <InputAdornment position="start">
-                    <IconButton>
-                      <i className="material-icons light">remove</i>
-                    </IconButton>
-                  </InputAdornment>,
-                endAdornment:
-                  <InputAdornment position="end">
-                    <IconButton>
-                      <i className="material-icons light">add</i>
-                    </IconButton>
-                  </InputAdornment>,
-                style: {width: '50%', textAlign: 'center'}
-              }}
+              onChange={(e, symbols) => this.props.set('symbolsUsed', symbols)}
+              value={this.props.settings.symbolsUsed}
+              fullWidth={true}
+              id='symbols'
             />
           }
-        </Paper>
+        </FormGroup>
+        <FormGroup>
+          <FormControlLabel
+            label="Salt"
+            control={
+              <Switch
+                checked={this.props.settings.salt}
+                onChange={(e, checked) => {
+                  checked && this.props.salt()
+                  this.props.setCheck('salt', checked)
+                }}
+                color="primary"
+              />
+            }
+          />
+          {this.props.settings.salt &&
+            <div className="container">
+              <TextField
+                onChange={(e, salt) => this.props.set('saltUsed', salt)}
+                value={this.props.settings.saltUsed}
+                fullWidth={true}
+                id='salt'
+              />
+              <IconButton onClick={this.props.salt}>
+                <i className="material-icons light">autorenew</i>
+              </IconButton>
+            </div>
+          }
+        </FormGroup>
       </div>
     )
   }
