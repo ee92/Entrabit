@@ -13,6 +13,9 @@ class Settings extends React.Component {
   }
 
   render() {
+
+    !this.props.settings.saltUsed && this.props.salt()
+
     return (
       <div className='space'>
         <FormGroup>
@@ -21,7 +24,7 @@ class Settings extends React.Component {
             control={
               <Switch
                 checked={this.props.settings.memorable}
-                onChange={(e, checked) => this.props.setCheck('memorable', checked)}
+                onChange={(e, checked) => this.props.set('memorable', checked)}
                 color="primary"
               />
             }
@@ -49,7 +52,7 @@ class Settings extends React.Component {
             control={
               <Switch
                 checked={this.props.settings.symbols}
-                onChange={(e, checked) => this.props.setCheck('symbols', checked)}
+                onChange={(e, checked) => this.props.set('symbols', checked)}
                 color="primary"
               />
             }
@@ -70,17 +73,16 @@ class Settings extends React.Component {
               <Switch
                 checked={this.props.settings.salt}
                 onChange={(e, checked) => {
-                  checked && this.props.salt()
-                  this.props.setCheck('salt', checked)
+                  this.props.set('salt', checked)
                 }}
                 color="primary"
               />
             }
           />
+          {!this.props.settings.saltUsed && this.props.salt()}
           {this.props.settings.salt &&
             <div className="container">
               <TextField
-                onChange={(e, salt) => this.props.set('saltUsed', salt)}
                 value={this.props.settings.saltUsed}
                 fullWidth={true}
                 id='salt'

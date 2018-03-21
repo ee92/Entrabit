@@ -44,11 +44,6 @@ class Generate extends React.Component {
     settings[setting] = state
     this.setState({settings})
   }
-  setCheck = (setting, checked) => {
-    let settings = {...this.state.settings}
-    settings[setting] = checked
-    this.setState({settings})
-  }
   incUp = (setting) => {
     let settings = {...this.state.settings}
     settings[setting] = settings[setting] + 1
@@ -180,7 +175,6 @@ class Generate extends React.Component {
               <DialogTitle>Password Settings</DialogTitle>
               <Settings
                 settings={this.state.settings}
-                setCheck={this.setCheck}
                 incUp={this.incUp}
                 incDown={this.incDown}
                 set={this.set}
