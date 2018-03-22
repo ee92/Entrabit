@@ -116,20 +116,31 @@ class Generate extends React.Component {
     })
   }
   createPassword = () => {
+    const alfanum = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
     let str = this.state.username + this.state.bit + this.state.site
-    let {saltUsed, words, symbols, symbolsUsed} = this.state.settings
+    let {memorable, length, salt, saltUsed, words, symbols, symbolsUsed} = this.state.settings
 
+    saltUsed = salt ? saltUsed : ''
     let hash = scrypt(str, saltUsed, 16384, 8, 1, 64).toString('hex')
       .split('').filter((x) => !isNaN(Number(x)))
 
     let number = hash[0]
-    let symbol = symbolsUsed.split('')[hash[1] % symbolsUsed.length]
+    let symbol = symbols ?
+      symbolsUsed.split('')[hash[1] % symbolsUsed.length] : ''
 
     let password = ''
-    for (var i=0; i<Number(words); i++) {
-      let word = wordList[hash.slice(i*10,i*10+10).join('') % wordList.length]
-      word = word.charAt(0).toUpperCase() + word.slice(1)
-      password += word
+    if (memorable) {
+      for (let i=0; i<Number(words); i++) {
+        let word = wordList[hash.slice(i*10,i*10+10).join('') % wordList.length]
+        word = word.charAt(0).toUpperCase() + word.slice(1)
+        password += word
+      }
+    } else {
+      let offset = symbols ? 2 : 1
+      for (let i=0; i<Number(length)-offset; i++) {
+        let char = alfanum.split('')[hash.slice(2*i,2*i+2).join('') % alfanum.length]
+        password += char
+      }
     }
 
     password += number + symbol

@@ -2,16 +2,19 @@ const React = require('react')
 const Increment = require('./Increment')
 
 import Switch from 'material-ui-next/Switch'
-import TextField from 'material-ui/TextField'
+import TextField from 'material-ui-next/TextField'
 import IconButton from 'material-ui/IconButton'
+import { InputAdornment } from 'material-ui-next/Input'
 import { FormGroup, FormControlLabel } from 'material-ui-next/Form'
 
 class Settings extends React.Component {
 
+  componentDidMount() {
+    (!this.props.settings.saltUsed && !this.props.settings.salt)
+    && this.props.salt()
+  }
+
   render() {
-
-    !this.props.settings.saltUsed && this.props.salt()
-
     return (
       <div className='space'>
         <FormGroup>
@@ -55,7 +58,7 @@ class Settings extends React.Component {
           />
           {this.props.settings.symbols &&
             <TextField
-              onChange={(e, symbols) => this.props.set('symbolsUsed', symbols)}
+              onChange={(e) => this.props.set('symbolsUsed', e.target.value)}
               value={this.props.settings.symbolsUsed}
               fullWidth={true}
               id='symbols'
@@ -68,25 +71,25 @@ class Settings extends React.Component {
             control={
               <Switch
                 checked={this.props.settings.salt}
-                onChange={(e, checked) => {
-                  this.props.set('salt', checked)
-                }}
+                onChange={(e, checked) => this.props.set('salt', checked)}
                 color="primary"
               />
             }
           />
-          {!this.props.settings.saltUsed && this.props.salt()}
           {this.props.settings.salt &&
-            <div className="container">
-              <TextField
-                value={this.props.settings.saltUsed}
-                fullWidth={true}
-                id='salt'
-              />
-              <IconButton onClick={this.props.salt}>
-                <i className="material-icons light">autorenew</i>
-              </IconButton>
-            </div>
+            <TextField
+              value={this.props.settings.saltUsed}
+              fullWidth={true}
+              id='salt'
+              InputProps={{
+                endAdornment:
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => this.props.salt()}>
+                      <i className="material-icons light">autorenew</i>
+                    </IconButton>
+                  </InputAdornment>
+              }}
+            />
           }
         </FormGroup>
       </div>
