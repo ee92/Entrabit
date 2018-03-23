@@ -11,6 +11,7 @@ import Settings from './Settings'
 import RaisedButton from 'material-ui/RaisedButton'
 import PasswordField from 'material-ui-password-field'
 import IconButton from 'material-ui/IconButton'
+import Snackbar from 'material-ui/Snackbar'
 import Button from 'material-ui-next/Button'
 import Dialog, { DialogActions, DialogTitle } from 'material-ui-next/Dialog';
 
@@ -26,6 +27,7 @@ class Generate extends React.Component {
     password: '',
     bit: '',
     options: false,
+    copied: false,
     settings: {
       memorable: true,
       symbols: true,
@@ -36,6 +38,14 @@ class Generate extends React.Component {
       words: 3
     }
   }
+
+  // copy to clipboard
+  copy = () => {
+    this.refs.password.select()
+    document.execCommand("copy")
+    this.setState({copied: true})
+  }
+  handleCopy = () => this.setState({copied: false})
 
   // used by Settings
   toggleOptions = () => this.setState({options: !this.state.options})
@@ -211,14 +221,31 @@ class Generate extends React.Component {
             </Dialog>
           )}
           {this.state.password && (
-            <PasswordField
-              floatingLabelText={`Password for ${this.state.site || 'website'}`}
-              disableButton={false}
-              underlineFocusStyle={{borderBottom: 'none'}}
-              value={this.state.password}
-              fullWidth={true}
-            />
+            <div className="container">
+              <PasswordField
+                floatingLabelText={`Password for ${this.state.site}`}
+                underlineFocusStyle={{borderBottom: 'none'}}
+                value={this.state.password}
+                style={{ flexGrow: 1}}
+                fullWidth={true}
+              />
+              <IconButton onClick={this.copy}>
+                <i className="material-icons light">content_paste</i>
+              </IconButton>
+            </div>
           )}
+          <input
+            value={this.state.password}
+            ref='password'
+            style={{position: 'absolute', left: '-1000px', top: '-1000px'}}
+          />
+          <Snackbar
+            bodyStyle={{textAlign: 'center'}}
+            open={this.state.copied}
+            onClose={this.handleCopy}
+            autoHideDuration={1000}
+            message="Copied!"
+          />
         </div>
       </div>
     )
