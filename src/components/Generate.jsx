@@ -1,7 +1,7 @@
 const React = require('react')
-const wordList = require('an-array-of-english-words')
+const wordList = require('more-words')
 const icons = require('./../../icons.js')
-const scrypt = require('scryptsy')
+const pbkdf2 = require('pbkdf2')
 const md5 = require('md5')
 
 import Aid from './Aid'
@@ -11,7 +11,7 @@ import Settings from './Settings'
 import RaisedButton from 'material-ui/RaisedButton'
 import PasswordField from 'material-ui-password-field'
 import IconButton from 'material-ui/IconButton'
-import Snackbar from 'material-ui/Snackbar'
+import Snackbar from 'material-ui-next/Snackbar'
 import Button from 'material-ui-next/Button'
 import Dialog, { DialogActions, DialogTitle } from 'material-ui-next/Dialog';
 
@@ -28,6 +28,7 @@ class Generate extends React.Component {
     bit: '',
     options: false,
     copied: false,
+    loading: false,
     settings: {
       memorable: true,
       symbols: true,
@@ -131,9 +132,8 @@ class Generate extends React.Component {
     let {memorable, length, salt, saltUsed, words, symbols, symbolsUsed} = this.state.settings
 
     saltUsed = salt ? saltUsed : ''
-    let hash = scrypt(str, saltUsed, 16384, 8, 1, 64).toString('hex')
+    let hash = pbkdf2.pbkdf2Sync(str, saltUsed, 1, 32, 'sha512').toString('hex')
       .split('').filter((x) => !isNaN(Number(x)))
-
     let number = hash[0]
     let symbol = symbols ?
       symbolsUsed.split('')[hash[1] % symbolsUsed.length] : ''
@@ -141,7 +141,7 @@ class Generate extends React.Component {
     let password = ''
     if (memorable) {
       for (let i=0; i<Number(words); i++) {
-        let word = wordList[hash.slice(i*10,i*10+10).join('') % wordList.length]
+        let word = wordList[hash.slice(i*7,i*7+7).join('') % wordList.length]
         word = word.charAt(0).toUpperCase() + word.slice(1)
         password += word
       }
@@ -154,10 +154,8 @@ class Generate extends React.Component {
     }
 
     password += number + symbol
-
     this.setState({password})
     this.storeUserData()
-    this.getWebsites()
   }
 
   // load user sites
@@ -166,10 +164,6 @@ class Generate extends React.Component {
   render() {
     return (
       <div className='app'>
-        <p>
-          Remember a single <i>master password</i>, and use it to generate the
-          rest of your passwords... this app will never store <b>any</b> of them!
-        </p>
         <div className='inputs'>
           <Info
             websites={this.state.websites}
@@ -240,13 +234,16 @@ class Generate extends React.Component {
             style={{position: 'absolute', left: '-1000px', top: '-1000px'}}
           />
           <Snackbar
-            bodyStyle={{textAlign: 'center'}}
+            style={{textAlign: 'center'}}
             open={this.state.copied}
             onClose={this.handleCopy}
-            autoHideDuration={1000}
+            autoHideDuration={1200}
             message="Copied!"
           />
         </div>
+        {this.state.loading &&
+          <p>loading..</p>
+        }
       </div>
     )
   }
