@@ -1,5 +1,5 @@
 const React = require('react')
-const wordList = require('more-words')
+const wordList = require('an-array-of-english-words')
 const icons = require('./../../icons.js')
 const pbkdf2 = require('pbkdf2')
 const md5 = require('md5')
@@ -197,7 +197,10 @@ class Generate extends React.Component {
           {this.state.options && (
             <Dialog
               open={this.state.options}
-              onClose={() => this.setState({options: false})}
+              onClose={() => {
+                this.createPassword()
+                this.setState({options: false})
+              }}
             >
               <DialogTitle>Password Settings</DialogTitle>
               <Settings
@@ -208,14 +211,17 @@ class Generate extends React.Component {
                 salt={this.salt}
               />
               <DialogActions>
-                <Button onClick={() => this.setState({options: false})}>
+                <Button onClick={() => {
+                  this.createPassword()
+                  this.setState({options: false})
+                }}>
                   DONE
                 </Button>
               </DialogActions>
             </Dialog>
           )}
-          {this.state.password && (
-            <div className="container">
+          {(this.state.password && this.state.site && this.state.username && this.state.bit) &&
+            (<div className="container">
               <PasswordField
                 floatingLabelText={`Password for ${this.state.site}`}
                 underlineFocusStyle={{borderBottom: 'none'}}
@@ -226,8 +232,8 @@ class Generate extends React.Component {
               <IconButton onClick={this.copy}>
                 <i className="material-icons light">content_paste</i>
               </IconButton>
-            </div>
-          )}
+            </div>)
+          }
           <input
             value={this.state.password}
             ref='password'
