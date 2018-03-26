@@ -8,8 +8,6 @@ class Info extends React.Component {
 
   render() {
 
-    let remove = this.props.websites.includes(this.props.site) ? "delete" : "clear"
-
     return (
       <div>
         <div className='container'>
@@ -24,9 +22,9 @@ class Info extends React.Component {
             searchText={this.props.site}
             listStyle={{ maxHeight: 200, overflow: 'auto' }}
           />
-          {(this.props.site) &&
-            (<IconButton onClick={this.props.deleteSite} tooltip={remove == "delete" && "remove from list"}>
-              <i className="material-icons light">{remove}</i>
+          { this.props.websites.includes(this.props.site) &&
+            (<IconButton onClick={this.props.deleteSite}>
+              <span><i className="fas fa-trash-alt see light"></i></span>
             </IconButton>)
           }
         </div>
@@ -37,11 +35,6 @@ class Info extends React.Component {
             floatingLabelText="Username/Email"
             fullWidth={true}
           />
-          {(this.props.username) &&
-            (<IconButton onClick={this.props.deleteUsername}>
-              <i className="material-icons light">clear</i>
-            </IconButton>)
-          }
         </div>
       </div>
     )

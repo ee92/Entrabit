@@ -85,7 +85,7 @@ class Settings extends React.Component {
                 endAdornment:
                   <InputAdornment position="end">
                     <IconButton onClick={() => this.props.salt()}>
-                      <i className="material-icons light">autorenew</i>
+                      <span><i className="fas fa-sync-alt see light"></i></span>
                     </IconButton>
                   </InputAdornment>
               }}

@@ -13,7 +13,9 @@ const Aid = (props) => (
       <div className='icons'>
         { props.aid &&
           props.aid.map((icon) => (
-            <i className="material-icons" key={icon}>{icon}</i>
+            <div key={icon[0]} >
+              <i className={`fas fa-${icon[0]}`} style={{color: icon[1], minWidth: '30px'}}></i>
+            </div>
           ))
         }
       </div>

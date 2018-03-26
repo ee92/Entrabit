@@ -1,6 +1,5 @@
 const React = require('react')
 const wordList = require('an-array-of-english-words')
-const icons = require('./../../icons.js')
 const pbkdf2 = require('pbkdf2')
 const md5 = require('md5')
 
@@ -72,8 +71,26 @@ class Generate extends React.Component {
 
   // used by Info
   setUser = (username) => this.setState({username})
-  setSite = (site) => this.setState({site})
+  setSite = (site) => {
+    if (!this.state.websites.includes(site)) {
+      this.setState({username: ''})
+    }
+    this.setState({site})
+  }
   getSettings = () => {
+    if (!this.state.websites.includes(this.state.site)) {
+      this.setState({
+        settings: {
+          memorable: true,
+          symbols: true,
+          symbolsUsed: '@#$%^&*?!',
+          salt: false,
+          saltUsed: '',
+          length: 16,
+          words: 3
+        }
+      })
+    }
     database.ref(this.props.user.uid).once('value', (sites) => {
       sites.forEach((site) => {
         if (site.key == this.state.site) {
@@ -89,20 +106,37 @@ class Generate extends React.Component {
     database.ref(this.props.user.uid).child(this.state.site).remove()
     this.getWebsites()
     this.setState({
+      username: '',
       password: '',
-      site: ''
+      site: '',
+      settings: {
+        memorable: true,
+        symbols: true,
+        symbolsUsed: '@#$%^&*?!',
+        salt: false,
+        saltUsed: '',
+        length: 16,
+        words: 3
+      }
     })
   }
-  deleteUsername = () => this.setState({username: ''})
 
   // used by Aid
   visualAid = (text) => {
     if (text) {
+      let icons = ['anchor', 'bicycle', 'bomb', 'cloud', 'cube', 'fire', 'flask', 'gem', 'heart', 'leaf', 'lightbulb', 'moon', 'phone', 'plane', 'plug', 'rocket', 'snowflake', 'sun', 'utensils', 'truck', 'tree', 'star', 'paw']
+      let colors = ['#f172a1', '#8eff60', '#ff0000', '#ffd700', '#3399ff', '#8a2be2']
       let hash = md5(text).split('').filter((x) => !isNaN(Number(x)))
       let aid = []
-      aid.push(icons[hash.slice(0,5).join('') % icons.length])
-      aid.push(icons[hash.slice(5,10).join('') % icons.length])
-      aid.push(icons[hash.slice(10,15).join('') % icons.length])
+
+      for (var i=0; i<3; i++) {
+        let icon = icons[hash.slice(i*5, i*5+5).join('') % icons.length]
+        icons = icons.filter(x => x !== icon)
+        let color = colors[hash.slice(i*5, i*5+5).join('') % colors.length]
+        colors = colors.filter(x => x !== color)
+        aid.push([icon, color, i])
+      }
+      this.forceUpdate()
       this.setState({aid, bit: text})
     } else {
       this.setState({aid: [], bit: text})
@@ -156,6 +190,7 @@ class Generate extends React.Component {
     password += number + symbol
     this.setState({password})
     this.storeUserData()
+    this.getWebsites()
   }
 
   // load user sites
@@ -189,7 +224,7 @@ class Generate extends React.Component {
               disabled={!(this.state.site && this.state.username && this.state.bit)}
             />
             <RaisedButton
-              icon={<i className="material-icons">settings</i>}
+              icon={<span><i className="fas fa-sliders-h see"></i></span>}
               onClick={this.toggleOptions}
               className="space"
             />
@@ -198,7 +233,9 @@ class Generate extends React.Component {
             <Dialog
               open={this.state.options}
               onClose={() => {
-                this.createPassword()
+                if (this.state.site && this.state.username && this.state.bit) {
+                  this.createPassword()
+                }
                 this.setState({options: false})
               }}
             >
@@ -212,7 +249,9 @@ class Generate extends React.Component {
               />
               <DialogActions>
                 <Button onClick={() => {
-                  this.createPassword()
+                  if (this.state.site && this.state.username && this.state.bit) {
+                    this.createPassword()
+                  }
                   this.setState({options: false})
                 }}>
                   DONE
@@ -220,7 +259,7 @@ class Generate extends React.Component {
               </DialogActions>
             </Dialog>
           )}
-          {(this.state.password && this.state.site && this.state.username && this.state.bit) &&
+          {(this.state.password && this.state.site && this.state.username && this.state.bit && this.state.websites.includes(this.state.site)) &&
             (<div className="container">
               <PasswordField
                 floatingLabelText={`Password for ${this.state.site}`}
@@ -230,7 +269,7 @@ class Generate extends React.Component {
                 fullWidth={true}
               />
               <IconButton onClick={this.copy}>
-                <i className="material-icons light">content_paste</i>
+                <span><i className="far fa-clipboard see light"></i></span>
               </IconButton>
             </div>)
           }
@@ -247,9 +286,6 @@ class Generate extends React.Component {
             message="Copied!"
           />
         </div>
-        {this.state.loading &&
-          <p>loading..</p>
-        }
       </div>
     )
   }

@@ -11,10 +11,10 @@ const Increment = (props) => (
       endAdornment:
         <InputAdornment position="end">
           <IconButton onClick={() => props.incUp(props.setting)}>
-            <i className="material-icons light">keyboard_arrow_up</i>
+            <span><i className="fas fa-angle-up see light"></i></span>
           </IconButton>
           <IconButton onClick={() => props.incDown(props.setting)}>
-            <i className="material-icons light">keyboard_arrow_down</i>
+            <span><i className="fas fa-angle-down see light"></i></span>
           </IconButton>
         </InputAdornment>
     }}
