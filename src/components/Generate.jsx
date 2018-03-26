@@ -97,6 +97,8 @@ class Generate extends React.Component {
           this.setState({
             username: site.val().username,
             settings: site.val().settings
+          }, () => {
+            this.state.bit && this.createPassword()
           })
         }
       })
