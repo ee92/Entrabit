@@ -21,6 +21,8 @@ class Info extends React.Component {
             fullWidth={true}
             searchText={this.props.site}
             listStyle={{ maxHeight: 200, overflow: 'auto' }}
+            underlineFocusStyle={{borderColor: '#4357AA'}}
+            floatingLabelFocusStyle={{color: '#4357AA'}}
           />
           { this.props.websites.includes(this.props.site) &&
             (<IconButton onClick={this.props.deleteSite}>
@@ -33,6 +35,8 @@ class Info extends React.Component {
             onChange={(e, username) => this.props.setUser(username)}
             value={this.props.username}
             floatingLabelText="Username/Email"
+            underlineFocusStyle={{borderColor: '#4357AA'}}
+            floatingLabelFocusStyle={{color: '#4357AA'}}
             fullWidth={true}
           />
         </div>

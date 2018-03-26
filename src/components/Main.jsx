@@ -57,6 +57,7 @@ class Main extends React.Component {
             title='EntraBit'
             showMenuIconButton={false}
             iconElementRight={authButton}
+            style={{backgroundColor: '#4255AC'}}
           />
           {app}
         </div>

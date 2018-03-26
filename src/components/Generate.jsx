@@ -136,7 +136,6 @@ class Generate extends React.Component {
         colors = colors.filter(x => x !== color)
         aid.push([icon, color, i])
       }
-      this.forceUpdate()
       this.setState({aid, bit: text})
     } else {
       this.setState({aid: [], bit: text})
@@ -218,10 +217,11 @@ class Generate extends React.Component {
             <RaisedButton
               onClick={this.createPassword}
               label="generate"
-              primary={true}
+              labelColor="white"
               style={{ flexGrow: 1}}
               className="space"
               disabled={!(this.state.site && this.state.username && this.state.bit)}
+              backgroundColor='#4357AA'
             />
             <RaisedButton
               icon={<span><i className="fas fa-sliders-h see"></i></span>}
@@ -264,6 +264,7 @@ class Generate extends React.Component {
               <PasswordField
                 floatingLabelText={`Password for ${this.state.site}`}
                 underlineFocusStyle={{borderBottom: 'none'}}
+                floatingLabelFocusStyle={{color: '#4357AA'}}
                 value={this.state.password}
                 style={{ flexGrow: 1}}
                 fullWidth={true}

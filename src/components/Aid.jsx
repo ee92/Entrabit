@@ -9,11 +9,13 @@ const Aid = (props) => (
       style={{ flexGrow: 1}}
       fullWidth={true}
       floatingLabelText="Entrabit"
+      underlineFocusStyle={{borderColor: '#4357AA'}}
+      floatingLabelFocusStyle={{color: '#4357AA'}}
     />
       <div className='icons'>
         { props.aid &&
           props.aid.map((icon) => (
-            <div key={icon[0]} >
+            <div key={icon[2]} >
               <i className={`fas fa-${icon[0]}`} style={{color: icon[1], minWidth: '30px'}}></i>
             </div>
           ))
