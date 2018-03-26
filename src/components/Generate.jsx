@@ -163,8 +163,8 @@ class Generate extends React.Component {
   }
   createPassword = () => {
     const alfanum = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    let str = this.state.username + this.state.bit + this.state.site
     let {memorable, length, salt, saltUsed, words, symbols, symbolsUsed} = this.state.settings
+    let str = this.state.username + this.state.bit + this.state.site + length + words + symbols + symbolsUsed
 
     saltUsed = salt ? saltUsed : ''
     let hash = pbkdf2.pbkdf2Sync(str, saltUsed, 1, 32, 'sha512').toString('hex')
@@ -219,7 +219,7 @@ class Generate extends React.Component {
             <RaisedButton
               onClick={this.createPassword}
               label="generate"
-              labelColor="white"
+              labelColor="#FFFFFF"
               style={{ flexGrow: 1}}
               className="space"
               disabled={!(this.state.site && this.state.username && this.state.bit)}

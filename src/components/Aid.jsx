@@ -15,8 +15,8 @@ const Aid = (props) => (
       <div className='icons'>
         { props.aid &&
           props.aid.map((icon) => (
-            <div key={icon[2]} >
-              <i className={`fas fa-${icon[0]}`} style={{color: icon[1], minWidth: '30px'}}></i>
+            <div key={icon[2]} style={{color: icon[1], minWidth: '28px', textAlign: 'center'}}>
+              <i className={`fas fa-${icon[0]}`}></i>
             </div>
           ))
         }
