@@ -12,6 +12,7 @@ import PasswordField from 'material-ui-password-field'
 import IconButton from 'material-ui/IconButton'
 import Snackbar from 'material-ui-next/Snackbar'
 import Button from 'material-ui-next/Button'
+import Paper from 'material-ui-next/Paper'
 import Dialog, { DialogActions, DialogTitle } from 'material-ui-next/Dialog';
 
 import firebase, { storage, database } from '../firebase'
@@ -199,7 +200,7 @@ class Generate extends React.Component {
 
   render() {
     return (
-      <div className='app'>
+      <Paper className='app space-in space-up'>
         <div className='inputs'>
           <Info
             websites={this.state.websites}
@@ -289,7 +290,7 @@ class Generate extends React.Component {
             message="Copied!"
           />
         </div>
-      </div>
+      </Paper>
     )
   }
 }

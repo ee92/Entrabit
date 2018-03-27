@@ -1,5 +1,6 @@
 const React = require('react')
 const Generate = require('./Generate')
+const About = require('./About')
 import firebase, { auth, provider } from '../firebase'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import FlatButton from 'material-ui/FlatButton'
@@ -47,12 +48,12 @@ class Main extends React.Component {
         </FlatButton>
 
     let app = !this.state.user
-      ? <h4>Log in to use app</h4>
+      ? <h4 style={{textAlign: 'center'}}>Log in to use app</h4>
       : <Generate user={this.state.user}/>
 
     return (
       <MuiThemeProvider>
-        <div>
+        <div style={{backgroundColor: '#c0cbff'}}>
           <AppBar
             title='EntraBit'
             showMenuIconButton={false}
@@ -60,6 +61,7 @@ class Main extends React.Component {
             style={{backgroundColor: '#4255AC'}}
           />
           {app}
+          <About/>
         </div>
       </MuiThemeProvider>
     )

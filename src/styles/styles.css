@@ -4,18 +4,22 @@
   font-family: 'Roboto', sans-serif;
 }
 
+.double {
+  font-size: 200%;
+}
+
 .see {
   font-size: 20px;
 }
 
 .app {
-  width: 75%;
+  width: 50%;
   margin: 0 auto;
 }
 
 .inputs {
   margin: 0 auto;
-  width: 75%;
+  width: 80%;
   display: flex;
   flex-direction: column;
 }
@@ -30,6 +34,14 @@
   display: flex;
   flex-direction: row;
   align-items: baseline;
+  justify-content: space-around;
+}
+
+.container-alt {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-around;
 }
 
 .light {
@@ -40,6 +52,15 @@
   margin: 12px;
 }
 
+.space-up {
+  margin-top: 24px;
+}
+
+.roomy {
+  margin: 24px;
+  padding: 24px;
+}
+
 .space-in {
   padding: 12px;
 }
@@ -48,8 +69,37 @@
   z-index: 2;
 }
 
-@media (max-width: 450px) {
+.center {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.wide {
+  max-width: 300px;
+  min-height: 150px;
+}
+
+.round {
+  border-radius: 4%;
+}
+
+.white {
+  color: #FFFFFF;
+}
+
+.afee {
+  color: #c9eafb;
+}
+
+@media (max-width: 550px) {
+  .app {
+    width: 80%;
+  }
   .inputs {
     width: 100%;
+  }
+  .container-alt {
+    flex-direction: column;
+    align-items: center;
   }
 }
