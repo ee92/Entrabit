@@ -26,10 +26,5 @@ module.exports = {
   },
   resolve: {
     extensions: [".js", ".jsx", ".css"]
-  },
-  plugins: [
-    new Jarvis({
-      port: 1337 // optional: set a port
-    })
-  ]
+  }
 };
