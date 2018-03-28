@@ -91,7 +91,7 @@
   color: #c9eafb;
 }
 
-@media (max-width: 550px) {
+@media (max-width: 650px) {
   .app {
     width: 80%;
   }

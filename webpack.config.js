@@ -20,7 +20,7 @@ module.exports = {
       },
       {
         test: /\.(jpg|png|gif|svg|pdf|ico)$/,
-        use: 'file-loader'
+        use: "file-loader?name=/public/images/[name].[ext]"
       },
     ]
   },

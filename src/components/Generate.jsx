@@ -1,5 +1,6 @@
 const React = require('react')
 const wordList = require('an-array-of-english-words')
+const scrabbleList = require('../scrabble-words.js')
 const pbkdf2 = require('pbkdf2')
 const md5 = require('md5')
 
