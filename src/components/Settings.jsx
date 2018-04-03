@@ -1,5 +1,6 @@
 const React = require('react')
 const Increment = require('./Increment')
+const ps = require('pretty-seconds');
 
 import Switch from 'material-ui-next/Switch'
 import TextField from 'material-ui-next/TextField'
@@ -8,6 +9,33 @@ import { InputAdornment } from 'material-ui-next/Input'
 import { FormGroup, FormControlLabel } from 'material-ui-next/Form'
 
 class Settings extends React.Component {
+
+  state = {
+    strength: 0
+  }
+
+  calculateStrength = (props) => {
+    const { memorable, words, length, symbols, symbolsUsed } = props.settings
+    if (memorable) {
+      let wordEntropy = words * Math.log2(props.wordcount)
+      let symbolEntropy = symbols ? Math.log2(symbolsUsed.length) : 0
+      let totalEntropy = wordEntropy + symbolEntropy + 1
+      console.log(totalEntropy)
+      let strength = Math.floor(Math.pow(2, totalEntropy)) / 1000000
+      this.setState({strength})
+    } else {
+      let characters = symbols ? (length - 2) : (length - 1)
+      let symbolEntropy = symbols ? Math.log2(symbolsUsed.length) : 0
+      let characterEntropy = Math.log2(62) * length
+      let totalEntropy = characterEntropy + symbolEntropy + 1
+      let strength = Math.floor(Math.pow(2, totalEntropy)) / 1000000
+      this.setState({strength})
+    }
+  }
+
+  componentWillReceiveProps(props){
+    this.calculateStrength(props)
+  }
 
   componentDidMount() {
     (!this.props.settings.saltUsed && !this.props.settings.salt)
@@ -92,6 +120,11 @@ class Settings extends React.Component {
             />
           }
         </FormGroup>
+        <div className='space-in'>
+          <p>Your password will require</p>
+          <p className='space-in'>{ps(this.state.strength)}</p>
+          <p>to crack at 1 MILLION guesses/second</p>
+        </div>
       </div>
     )
   }

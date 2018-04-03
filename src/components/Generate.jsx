@@ -36,7 +36,7 @@ class Generate extends React.Component {
       symbolsUsed: '@#$%^&*?!',
       salt: false,
       saltUsed: '',
-      length: 16,
+      length: 10,
       words: 3
     }
   }
@@ -197,7 +197,9 @@ class Generate extends React.Component {
   }
 
   // load user sites
-  componentDidMount() {this.getWebsites()}
+  componentDidMount() {
+    this.getWebsites()
+  }
 
   render() {
     return (
@@ -250,6 +252,7 @@ class Generate extends React.Component {
                 incDown={this.incDown}
                 set={this.set}
                 salt={this.salt}
+                wordcount={wordList.length}
               />
               <DialogActions>
                 <Button onClick={() => {
