@@ -6,6 +6,7 @@ import { InputAdornment } from 'material-ui-next/Input'
 
 const Increment = (props) => (
   <TextField
+    fullWidth={true}
     value={props.value}
     InputProps={{
       endAdornment:

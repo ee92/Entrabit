@@ -3,10 +3,11 @@ const Increment = require('./Increment')
 const ps = require('pretty-seconds');
 
 import Switch from 'material-ui-next/Switch'
+import Radio, { RadioGroup } from 'material-ui-next/Radio'
 import TextField from 'material-ui-next/TextField'
 import IconButton from 'material-ui/IconButton'
 import { InputAdornment } from 'material-ui-next/Input'
-import { FormGroup, FormControlLabel } from 'material-ui-next/Form'
+import { FormLabel, FormGroup, FormControlLabel } from 'material-ui-next/Form'
 
 class Settings extends React.Component {
 
@@ -15,12 +16,12 @@ class Settings extends React.Component {
   }
 
   calculateStrength = (props) => {
+    const wordListLength = props.wordcount
     const { memorable, words, length, symbols, symbolsUsed } = props.settings
     if (memorable) {
-      let wordEntropy = words * Math.log2(props.wordcount)
+      let wordEntropy = words * Math.log2(wordListLength)
       let symbolEntropy = symbols ? Math.log2(symbolsUsed.length) : 0
       let totalEntropy = wordEntropy + symbolEntropy + 1
-      console.log(totalEntropy)
       let strength = Math.floor(Math.pow(2, totalEntropy)) / 1000000
       this.setState({strength})
     } else {
@@ -58,12 +59,49 @@ class Settings extends React.Component {
           />
           {this.props.settings.memorable
           ?
-            <Increment
-              value={this.props.settings.words + " words"}
-              setting="words"
-              incUp={this.props.incUp}
-              incDown={this.props.incDown}
-            />
+            <div>
+              <FormGroup row={true}>
+                <FormControlLabel
+                  label="small wordset"
+                  control={
+                    <Radio
+                      color='primary'
+                      checked={this.props.settings.wordList === "s"}
+                      value="s"
+                      onChange={() => this.props.set("wordList", "s")}
+                    />
+                  }
+                />
+                <FormControlLabel
+                  label="medium wordset"
+                  control={
+                    <Radio
+                      color='primary'
+                      checked={this.props.settings.wordList === "m"}
+                      value="m"
+                      onChange={() => this.props.set("wordList", "m")}
+                    />
+                  }
+                />
+                <FormControlLabel
+                  label="large wordset"
+                  control={
+                    <Radio
+                      color='primary'
+                      checked={this.props.settings.wordList === "l"}
+                      value="l"
+                      onChange={() => this.props.set("wordList", "l")}
+                    />
+                  }
+                />
+              </FormGroup>
+              <Increment
+                value={this.props.settings.words + " words"}
+                setting="words"
+                incUp={this.props.incUp}
+                incDown={this.props.incDown}
+              />
+            </div>
           :
             <Increment
               value={this.props.settings.length + " characters"}

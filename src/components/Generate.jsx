@@ -1,6 +1,7 @@
 const React = require('react')
-const wordList = require('an-array-of-english-words')
-const scrabbleList = require('../scrabble-words.js')
+const lWordList = require('an-array-of-english-words')
+const mWordList = require('../medwords.js')
+const sWordList = require('../smallwords.js')
 const pbkdf2 = require('pbkdf2')
 const md5 = require('md5')
 
@@ -31,6 +32,7 @@ class Generate extends React.Component {
     copied: false,
     loading: false,
     settings: {
+      wordList: "s",
       memorable: true,
       symbols: true,
       symbolsUsed: '@#$%^&*?!',
@@ -67,6 +69,7 @@ class Generate extends React.Component {
     this.setState({settings})
   }
   salt = () => {
+    const wordList = this.getWordList()
     let word = wordList[Math.floor(Math.random() * wordList.length)]
     this.set('saltUsed', word)
   }
@@ -83,6 +86,7 @@ class Generate extends React.Component {
     if (!this.state.websites.includes(this.state.site)) {
       this.setState({
         settings: {
+          wordlist: "s",
           memorable: true,
           symbols: true,
           symbolsUsed: '@#$%^&*?!',
@@ -114,6 +118,7 @@ class Generate extends React.Component {
       password: '',
       site: '',
       settings: {
+        wordList: "s",
         memorable: true,
         symbols: true,
         symbolsUsed: '@#$%^&*?!',
@@ -163,7 +168,17 @@ class Generate extends React.Component {
       this.setState({websites})
     })
   }
+  getWordList = () => {
+    let current = sWordList
+    let { wordList } = this.state.settings
+    if (wordList === "s") {current = sWordList}
+    if (wordList === "m") {current = mWordList}
+    if (wordList === "l") {current = lWordList}
+    return current
+  }
   createPassword = () => {
+    const wordList = this.getWordList()
+    console.log(wordList[0])
     const alfanum = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
     let {memorable, length, salt, saltUsed, words, symbols, symbolsUsed} = this.state.settings
     let str = this.state.username + this.state.bit + this.state.site + length + words + symbols + symbolsUsed
@@ -252,7 +267,7 @@ class Generate extends React.Component {
                 incDown={this.incDown}
                 set={this.set}
                 salt={this.salt}
-                wordcount={wordList.length}
+                wordcount={this.getWordList().length}
               />
               <DialogActions>
                 <Button onClick={() => {
