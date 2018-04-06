@@ -1,6 +1,6 @@
 const React = require('react')
 const Increment = require('./Increment')
-const ps = require('pretty-seconds');
+const ps = require('pretty-seconds')
 
 import Switch from 'material-ui-next/Switch'
 import Radio, { RadioGroup } from 'material-ui-next/Radio'

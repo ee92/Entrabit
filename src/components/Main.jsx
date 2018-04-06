@@ -1,8 +1,11 @@
 const React = require('react')
 const Generate = require('./Generate')
 const About = require('./About')
-import firebase, { auth, provider } from '../firebase'
+
+import firebase, { auth, googleProvider, githubProvider } from '../firebase'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import Dialog, { DialogActions, DialogTitle } from 'material-ui-next/Dialog'
+import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
 import AppBar from 'material-ui/AppBar'
 import Avatar from 'material-ui/Avatar'
@@ -11,10 +14,17 @@ class Main extends React.Component {
 
   state = {
     user: null,
-    avatar: null
+    avatar: null,
+    login: false
   }
 
-  login = () => { auth.signInWithPopup(provider) }
+  showLogin = () => {
+    this.setState({login: true})
+  }
+  login = (provider) => {
+    auth.signInWithPopup(provider)
+    this.setState({login: false})
+  }
   logout = () => { auth.signOut()}
 
   componentDidMount() {
@@ -43,7 +53,7 @@ class Main extends React.Component {
           <Avatar src={this.state.avatar} style={styles.pic}/>
         </div>
 
-      : <FlatButton onClick={this.login} style={styles.button}
+      : <FlatButton onClick={this.showLogin} style={styles.button}
           label="log in">
         </FlatButton>
 
@@ -62,6 +72,25 @@ class Main extends React.Component {
           />
           {app}
           <About/>
+          <Dialog
+            open={this.state.login}
+            onClose={() => this.setState({login: false})}
+          >
+            <DialogTitle>Login/Register</DialogTitle>
+            <div className="center" style={{display: 'flex', flexDirection: 'column'}}>
+              <RaisedButton
+                label="Sign in with Google"
+                onClick={() => this.login(googleProvider)}
+                className="space"
+              />
+              <RaisedButton
+                label="Sign in with GitHub"
+                onClick={() => this.login(githubProvider)}
+                className="space"
+              />
+            </div>
+
+          </Dialog>
         </div>
       </MuiThemeProvider>
     )

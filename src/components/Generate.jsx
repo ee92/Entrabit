@@ -15,7 +15,7 @@ import IconButton from 'material-ui/IconButton'
 import Snackbar from 'material-ui-next/Snackbar'
 import Button from 'material-ui-next/Button'
 import Paper from 'material-ui-next/Paper'
-import Dialog, { DialogActions, DialogTitle } from 'material-ui-next/Dialog';
+import Dialog, { DialogActions, DialogTitle } from 'material-ui-next/Dialog'
 
 import firebase, { storage, database } from '../firebase'
 
@@ -250,37 +250,35 @@ class Generate extends React.Component {
               className="space"
             />
           </div>
-          {this.state.options && (
-            <Dialog
-              open={this.state.options}
-              onClose={() => {
+          <Dialog
+            open={this.state.options}
+            onClose={() => {
+              if (this.state.site && this.state.username && this.state.bit) {
+                this.createPassword()
+              }
+              this.setState({options: false})
+            }}
+          >
+            <DialogTitle>Password Settings</DialogTitle>
+            <Settings
+              settings={this.state.settings}
+              incUp={this.incUp}
+              incDown={this.incDown}
+              set={this.set}
+              salt={this.salt}
+              wordcount={this.getWordList().length}
+            />
+            <DialogActions>
+              <Button onClick={() => {
                 if (this.state.site && this.state.username && this.state.bit) {
                   this.createPassword()
                 }
                 this.setState({options: false})
-              }}
-            >
-              <DialogTitle>Password Settings</DialogTitle>
-              <Settings
-                settings={this.state.settings}
-                incUp={this.incUp}
-                incDown={this.incDown}
-                set={this.set}
-                salt={this.salt}
-                wordcount={this.getWordList().length}
-              />
-              <DialogActions>
-                <Button onClick={() => {
-                  if (this.state.site && this.state.username && this.state.bit) {
-                    this.createPassword()
-                  }
-                  this.setState({options: false})
-                }}>
-                  DONE
-                </Button>
-              </DialogActions>
-            </Dialog>
-          )}
+              }}>
+                DONE
+              </Button>
+            </DialogActions>
+          </Dialog>
           {(this.state.password && this.state.site && this.state.username && this.state.bit && this.state.websites.includes(this.state.site)) &&
             (<div className="container">
               <PasswordField

@@ -10,15 +10,17 @@ const config = {
 };
 firebase.initializeApp(config)
 
-const provider = new firebase.auth.GoogleAuthProvider()
+const googleProvider = new firebase.auth.GoogleAuthProvider()
+const githubProvider = new firebase.auth.GithubAuthProvider()
 const auth = firebase.auth()
 const storage = firebase.storage()
 const database = firebase.database()
 
 module.exports = {
   firebase,
-  provider,
   auth,
   storage,
-  database
+  database,
+  googleProvider,
+  githubProvider
 }
